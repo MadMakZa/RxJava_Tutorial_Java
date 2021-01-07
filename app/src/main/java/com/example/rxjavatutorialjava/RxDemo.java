@@ -1,37 +1,49 @@
 package com.example.rxjavatutorialjava;
 
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import io.reactivex.Observable;
 
 public class RxDemo {
 
+    //печатать в логи
+    public static void printer(String string){
+        Log.d("log", string);
+    }
 
-
+    @SuppressLint("CheckResult")
     public static void testRx(){
 
         String name = "Maxim";
         String lastName = "Fon";
         String rang = "General";
 
-//        /*
-//        обычно так не делают
-//         */
-//        //создание переменной
-//        Observable observable = Observable.just(Log.d("log","Hello Makza"),(Log.d("log","Are you kidding me?")));
-//        //подписываемся к ней и печатаем текст на который подписались
-//        observable.subscribe();
-
         /*
-        А делают так
+        Метод just работа с передаваемыми элементами
          */
         Observable.just(name ,lastName, rang)
-                .reduce((a,b) -> a+b)
+                .reduce((a,b) -> a +" "+b)
                 .subscribe(RxDemo::printer);
+
+        /*
+        Метод callable
+         */
+        Observable.fromCallable(() -> {
+            //сюда можно засунуть кучу методов
+            return Log.d("log", "hello world method callable");
+        })
+                .subscribe();
+
+        /*
+        Метод range перебирает значения от начального до конечного
+         */
+        Observable.range(1, 10)
+                .subscribe(System.out::println);
+
     }
 
-    public static void printer(String string){
-        Log.d("log", string);
-    }
+
+
 }
