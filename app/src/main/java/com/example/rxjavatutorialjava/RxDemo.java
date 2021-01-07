@@ -4,6 +4,8 @@ package com.example.rxjavatutorialjava;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 
 public class RxDemo {
@@ -40,6 +42,12 @@ public class RxDemo {
         Метод range перебирает значения от начального до конечного
          */
         Observable.range(1, 10)
+                .subscribe(System.out::println);
+
+        /*
+        Метод intervalRange таймер с задержкой
+         */
+        Observable.intervalRange(1, 10, 2, 1, TimeUnit.SECONDS)
                 .subscribe(System.out::println);
 
     }
