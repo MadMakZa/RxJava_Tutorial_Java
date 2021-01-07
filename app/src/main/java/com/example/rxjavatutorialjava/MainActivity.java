@@ -11,31 +11,33 @@ import android.widget.EditText;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-import static com.example.rxjavatutorialjava.RxDemo.testRx;
-
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private EditText mEditText;
     private PublishSubject<String> mTextChangedSubject;
 
-    private void init(){
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mEditText = findViewById(R.id.editText);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
-        showDialog("First question", "Yes", "No");
+
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mEditText = findViewById(R.id.editText);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        showDialog("First question", "Yes", "No")
+                .flatMap(index -> showDialog("Second question", "Yes", "No"))
+                .flatMap(index -> showDialog("Third question", "Yes", "No"))
+                .subscribe();
+
 
     }
 
+    //показать диалог
     Observable<Integer> showDialog(String title, String positive, String negative){
 
-        PublishSubject publishSubject = PublishSubject.create();
+        PublishSubject<Integer> publishSubject = PublishSubject.create();
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this)
                 .setTitle(title)
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         return publishSubject
                 .hide()
                 .doOnSubscribe(disposable -> dialog.show());
-
 
     }
 }
