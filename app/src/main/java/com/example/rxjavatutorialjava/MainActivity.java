@@ -6,7 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
+
+import java.util.Arrays;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
@@ -26,10 +30,31 @@ public class MainActivity extends AppCompatActivity {
         mEditText = findViewById(R.id.editText);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        showDialog("First question", "Yes", "No")
-                .flatMap(index -> showDialog("Second question", "Yes", "No"))
-                .flatMap(index -> showDialog("Third question", "Yes", "No"))
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mTextChangedSubject.onNext(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        mTextChangedSubject
+                .map(str -> new MyAdapter(Arrays.asList(str.split(" "))))
                 .subscribe();
+
+//        showDialog("First question", "Yes", "No")
+//                .flatMap(index -> showDialog("Second question", "Yes", "No"))
+//                .flatMap(index -> showDialog("Third question", "Yes", "No"))
+//                .subscribe();
 
 
     }
